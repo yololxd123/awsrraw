@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>FEN Live</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      /* ── BetterMint-aligned colour system ─────────────────────────────── */
+      :root {
+        --primary:       #5d3fd3;
+        --primary-dark:  #4a30a8;
+        --primary-light: #7a5cff;
+        --bg:            #1e1e2d;
+        --bg-card:       #2a2a3a;
+        --text:          #ffffff;
+        --text-muted:    #aaaaaa;
+        --border:        #3a3a4a;
+        --success:       #4caf50;
+        --warning:       #ff9800;
+        --danger:        #ef4444;
+        --radius:        10px;
+        --font: "Segoe UI Variable Text","SF Pro Text",-apple-system,
+                BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif;
+        --font-mono: "Cascadia Code","JetBrains Mono","Fira Code",
+                     ui-monospace,SFMono-Regular,Consolas,monospace;
+        --transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        font-family: var(--font);
+        background: var(--bg);
+        color: var(--text);
+        width: 340px;
+        -webkit-font-smoothing: antialiased;
+        animation: fadeIn 0.35s ease;
+        overflow: hidden;
+      }
+
+      @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+      @keyframes slideUp { from{transform:translateY(8px);opacity:0} to{transform:translateY(0);opacity:1} }
+      @keyframes pulseGlow {
+        0%,100% { box-shadow:0 0 10px rgba(93,63,211,.45); }
+        50%      { box-shadow:0 0 22px rgba(93,63,211,.85); }
+      }
+      @keyframes dotPulse {
+        0%,100% { opacity:1; transform:scale(1);   }
+        50%      { opacity:.5; transform:scale(1.4); }
+      }
+      @keyframes slideIn {
+        from { transform:translateX(110%); opacity:0; }
+        to   { transform:translateX(0);   opacity:1; }
+      }
+
+      /* ── Header ──────────────────────────────────────────────────────── */
+      .header {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        padding: 13px 16px 12px;
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        position: relative;
+        overflow: hidden;
+      }
+      .header::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse 130% 90% at 90% 50%,
+                    rgba(122,92,255,.2) 0%, transparent 65%);
+        pointer-events: none;
+      }
+      .header-icon {
+        width: 34px; height: 34px;
+        background: rgba(255,255,255,.14);
+        border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 19px;
+        flex-shrink: 0;
+        animation: pulseGlow 2.6s ease infinite;
+        position: relative; z-index: 1;
+      }
+      .header-text { flex: 1; position: relative; z-index: 1; }
+      .header-title {
+        font-size: 15px; font-weight: 700;
+        color: #fff; letter-spacing: .2px; line-height: 1.2;
+      }
+      .header-sub {
+        font-size: 10px; color: rgba(255,255,255,.6);
+        letter-spacing: .9px; text-transform: uppercase;
+        margin-top: 2px;
+      }
+
+      /* ── Body ────────────────────────────────────────────────────────── */
+      .body { padding: 13px 14px 15px; }
+
+      /* FEN card */
+      .fen-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 11px 13px;
+        margin-bottom: 9px;
+        animation: slideUp .3s ease;
+        transition: border-color .2s ease;
+      }
+      .fen-card:hover { border-color: rgba(122,92,255,.5); }
+
+      .fen-label-row {
+        display: flex; align-items: center;
+        justify-content: space-between;
+        margin-bottom: 7px;
+      }
+      .fen-label {
+        font-size: 9.5px; font-weight: 700;
+        color: var(--primary-light);
+        letter-spacing: 1.3px; text-transform: uppercase;
+      }
+      #age {
+        font-family: var(--font-mono);
+        font-size: 10px; color: var(--text-muted);
+      }
+
+      #fen {
+        font-family: var(--font-mono);
+        font-size: 11px; line-height: 1.6;
+        word-break: break-all;
+        color: #c3b4ff;
+        background: rgba(0,0,0,.3);
+        border-radius: 6px;
+        padding: 8px 10px;
+        border: 1px solid rgba(93,63,211,.25);
+        min-height: 40px;
+        user-select: all;
+        cursor: text;
+      }
+
+      /* ── Status section (shown only after first send) ─────────────────── */
+      #status { display: none; }
+
+      .status-inner {
+        display: flex; align-items: center; gap: 9px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 9px 13px;
+        animation: slideUp .3s ease;
+        transition: border-color .2s;
+      }
+      .status-inner:hover { border-color: rgba(122,92,255,.4); }
+
+      /* The dot that popup.js controls via #dot */
+      .dot {
+        width: 8px; height: 8px; border-radius: 50%;
+        background: var(--text-muted);
+        flex-shrink: 0;
+        transition: background .3s ease, box-shadow .3s ease;
+      }
+      .dot.connected {
+        background: var(--success);
+        box-shadow: 0 0 8px rgba(76,175,80,.75);
+      }
+      .dot.connecting {
+        background: var(--warning);
+        animation: dotPulse .85s ease infinite;
+      }
+      .dot.disconnected { background: var(--danger); }
+      .dot.sending      {
+        background: var(--primary-light);
+        animation: dotPulse .55s ease infinite;
+      }
+
+      /* The state label popup.js writes to via #state */
+      #state {
+        font-family: var(--font-mono);
+        font-size: 11.5px; font-weight: 600;
+        color: var(--text);
+        flex: 1;
+      }
+
+      /* ── Divider + footer ────────────────────────────────────────────── */
+      .divider {
+        height: 1px;
+        background: var(--border);
+        margin: 10px 0 9px;
+      }
+      .footer-hint {
+        font-size: 10px; color: var(--text-muted);
+        text-align: center; letter-spacing: .2px;
+      }
+      .footer-hint b { color: var(--primary-light); font-weight: 600; }
+    </style>
+  </head>
+  <body>
+
+    <!-- ── Header ─────────────────────────────────────────────────── -->
+    <div class="header">
+      <div class="header-icon">♟</div>
+      <div class="header-text">
+        <div class="header-title">FEN Live</div>
+        <div class="header-sub">Chess Engine Bridge</div>
+      </div>
+    </div>
+
+    <!-- ── Body ───────────────────────────────────────────────────── -->
+    <div class="body">
+
+      <!-- FEN display card -->
+      <div class="fen-card">
+        <div class="fen-label-row">
+          <span class="fen-label">Current Position</span>
+          <span id="age"></span>
+        </div>
+        <div id="fen">—</div>
+      </div>
+
+      <!-- WS status — shown by popup.js when showStatus is true -->
+      <div id="status">
+        <div class="status-inner">
+          <span id="dot" class="dot"></span>
+          <span id="state">—</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="footer-hint">
+        <b>chess.com</b> &nbsp;·&nbsp; <b>lichess.org</b> &nbsp;·&nbsp; <b>worldchess.com</b>
+      </div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

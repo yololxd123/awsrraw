@@ -1,0 +1,188 @@
+{
+  "analysis": {
+    "summary": "Depth, search completion, UCI options and result parsing",
+    "contract": "Publish only completed current-position results at the actual requested depth with the attainable candidate count.",
+    "symbols": [
+      "gui_overlay.ChessOverlay.analyse_position",
+      "gui_overlay.ChessOverlay._dispatch_engine_search",
+      "gui_overlay.ChessOverlay._begin_engine_search",
+      "gui_overlay.ChessOverlay._process_engine_line",
+      "gui_overlay.ChessOverlay._expected_pvs",
+      "gui_overlay.ChessOverlay._search_signature"
+    ],
+    "files": [
+      "python/engine_session.py",
+      "python/engine_pool.py"
+    ],
+    "checks": [
+      "core",
+      "selection",
+      "engine"
+    ]
+  },
+  "accuracy": {
+    "summary": "Range targeting, strength override and suggestion styles",
+    "contract": "Target the range and nearest priority by default; styles apply near priority. Preserve explicit safety, opening/book and mate rules. No additional search.",
+    "symbols": [
+      "gui_overlay.ChessOverlay._target_accuracy_candidate",
+      "gui_overlay.ChessOverlay._choose_accuracy_candidate",
+      "gui_overlay.ChessOverlay._blunder_safe_lines",
+      "gui_overlay.ChessOverlay._draw_safe_lines",
+      "gui_overlay.ChessOverlay.toggle_recommendation_strength_first",
+      "gui_overlay.ChessOverlay._refresh_accuracy_selection",
+      "gui_overlay.ChessOverlay._apply_mode_ordering_filter"
+    ],
+    "files": [
+      "python/adaptive_policy.py",
+      "python/recommendation_policy.py"
+    ],
+    "checks": [
+      "core",
+      "selection"
+    ]
+  },
+  "openings": {
+    "summary": "Protected opening window and validated book candidates",
+    "contract": "Fullmoves1\u201310 protected. Book hits must be current scored roots within0.25 pawns and tighter active limits.",
+    "symbols": [
+      "gui_overlay.ChessOverlay._opening_protected",
+      "gui_overlay.ChessOverlay._validated_book_lines",
+      "gui_overlay.ChessOverlay._maybe_fetch_cloud_lines",
+      "gui_overlay.ChessOverlay._book_policy_key"
+    ],
+    "files": [
+      "python/book_manager.py"
+    ],
+    "checks": [
+      "core",
+      "selection"
+    ]
+  },
+  "arrows": {
+    "summary": "Suggestion readiness, rendering, coordinates and window lifecycle",
+    "contract": "Renderer and AutoMove share the selected candidate. Arrow window stays click-through and follows streamproof state.",
+    "symbols": [
+      "gui_overlay.ChessOverlay._compute_visible_suggestions",
+      "gui_overlay.ChessOverlay.redraw_all_arrows",
+      "gui_overlay.ChessOverlay._build_arrow_layer",
+      "gui_overlay.ChessOverlay._sync_arrow_layer",
+      "gui_overlay.ChessOverlay._on_overlay_visible"
+    ],
+    "files": [
+      "python/arrow_diagnostics.py"
+    ],
+    "checks": [
+      "core",
+      "selection",
+      "streamproof"
+    ]
+  },
+  "streamproof": {
+    "summary": "Windows capture exclusion for GUI, visualizer and arrows",
+    "contract": "F5 applies ON and OFF to the separate arrow HWND; remap/rebuild inherits current state. Linux API mocks do not verify actual capture.",
+    "symbols": [
+      "gui_overlay.ChessOverlay.toggle_stealth_mode",
+      "gui_overlay.ChessOverlay._apply_arrow_layer_capture_protection",
+      "gui_overlay.ChessOverlay._on_arrow_layer_mapped"
+    ],
+    "files": [
+      "python/auth_utils.py"
+    ],
+    "checks": [
+      "core",
+      "streamproof"
+    ]
+  },
+  "ui": {
+    "summary": "Native Tk sidebar, controls, variables and callbacks",
+    "contract": "Tk control panel, not a web app. Keep controls, overlay state, persisted settings and descriptive status synchronized.",
+    "symbols": [
+      "control_panel.ControlPanel.setup_tab_bar",
+      "control_panel.ControlPanel.setup_main_controls",
+      "control_panel.ControlPanel.sync_vars_from_overlay",
+      "gui_overlay.ChessOverlay.update_display"
+    ],
+    "files": [
+      "python/modern_widgets.py",
+      "python/widgets.py",
+      "python/eval_window.py"
+    ],
+    "checks": [
+      "core",
+      "ui"
+    ]
+  },
+  "settings": {
+    "summary": "Setting defaults, migration, save/load and atomic writer",
+    "contract": "New setting: update default, collect/apply, control variable and sync path. Keep user settings and credentials out of bundles.",
+    "symbols": [
+      "gui_overlay.ChessOverlay._collect_settings",
+      "gui_overlay.ChessOverlay._apply_settings_data",
+      "gui_overlay.ChessOverlay._sync_config_ui"
+    ],
+    "files": [
+      "python/settings_store.py",
+      "python/settings.example.json"
+    ],
+    "checks": [
+      "core",
+      "ui"
+    ]
+  },
+  "bridge": {
+    "summary": "Extension FEN/game context to Python WebSocket/UI queue",
+    "contract": "Reject stale board/result epochs; GUI state flows through Tk queue. No live-site test is implied by syntax or local mocks.",
+    "symbols": [
+      "gui_overlay.ChessOverlay.handle_client",
+      "gui_overlay.ChessOverlay.handle_analysis_request",
+      "gui_overlay.ChessOverlay.poll_ui_queue",
+      "gui_overlay.ChessOverlay.apply_analysis_request",
+      "gui_overlay.ChessOverlay._apply_game_context"
+    ],
+    "files": [
+      "extension/manifest.json",
+      "extension/background.js",
+      "extension/fenProvider.js",
+      "extension/gameContext.js",
+      "extension/mainListener.js",
+      "extension/popup.js"
+    ],
+    "checks": [
+      "core",
+      "js"
+    ]
+  },
+  "automove": {
+    "summary": "Selected candidate to move execution",
+    "contract": "Use the same ready suggestion as arrows; no raw-best fallback bypassing depth/policy.",
+    "symbols": [
+      "gui_overlay.ChessOverlay._automove_chosen_move",
+      "gui_overlay.ChessOverlay.execute_move_on_site"
+    ],
+    "files": [
+      "python/automove.py",
+      "python/mouse_motion.py"
+    ],
+    "checks": [
+      "core",
+      "selection",
+      "js"
+    ]
+  },
+  "timing": {
+    "summary": "Optional primary-engine depth timer and new-match reset",
+    "contract": "Completed searches only in averages; cache hits and incomplete searches separate; new match resets counts, not toggle.",
+    "symbols": [
+      "gui_overlay.ChessOverlay.toggle_depth_timing",
+      "gui_overlay.ChessOverlay._depth_timing_context",
+      "gui_overlay.ChessOverlay._refresh_depth_timing"
+    ],
+    "files": [
+      "python/depth_timer.py"
+    ],
+    "checks": [
+      "core",
+      "ui"
+    ]
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "manifest_version": 3,
+  "name": "Chessalyzah",
+  "version": "1.8.3",
+  "description": "Licensed authorized chess analyzer post-game for diamond members",
+  "permissions": [
+    "activeTab"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "fenProvider.js"
+      ],
+      "matches": [
+        "*://*.chess.com/*",
+        "*://chess.com/*"
+      ]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "FEN Live",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.chess.com/*",
+        "*://chess.com/*"
+      ],
+      "js": [
+        "fenProvider.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "*://*.chess.com/*",
+        "*://chess.com/*",
+        "*://*.lichess.org/*",
+        "*://lichess.org/*",
+        "*://*.worldchess.com/*",
+        "*://worldchess.com/*",
+        "*://*.chess24.com/*",
+        "*://chess24.com/*"
+      ],
+      "js": [
+        "gameContext.js",
+        "mainListener.js"
+      ],
+      "run_at": "document_idle",
+      "world": "ISOLATED"
+    }
+  ],
+  "version_name": "1.8.3 \u2014 Single-search accuracy and game context"
+}

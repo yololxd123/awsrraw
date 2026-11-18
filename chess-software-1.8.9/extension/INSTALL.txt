@@ -1,0 +1,19 @@
+CHESSALYZAH EXTENSION 1.8.3
+
+INSTALL
+Extract into a permanent folder. Open chrome://extensions, enable Developer mode,
+replace all files of the existing unpacked installation and click Reload; or
+Load unpacked and choose the folder containing manifest.json. Disable duplicate
+copies. Refresh every board tab and launch the companion Python app normally.
+Include gameContext.js. Bridge remains ws://localhost:8085.
+
+CHANGES
+Matching version for Python1.8.3. The check-reply and stricter range fixes are in
+Python; extension1.8.2 is compatible. Metadata extraction, delivery recovery and
+stale search rejection remain unchanged. Context updates do not restart searches.
+
+VERIFICATION / LIMITATIONS
+JavaScript syntax, declared resources and DOM/Chrome API fixtures for delivery,
+stale updates, unknown values, ratings/clocks/controls/identity passed. Live
+Chess.com/Lichess pages remain unverified; extraction is heuristic. Manual rating
+fallbacks are in the companion app. Browser sandbox settings are unchanged.

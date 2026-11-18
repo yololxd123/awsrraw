@@ -1,0 +1,20 @@
+{
+  "analysis_depth": 16,
+  "multi_pv": 3,
+  "recommendation_accuracy_enabled": false,
+  "analysis_time_ms": 0,
+  "analysis_nodes": 0,
+  "only_own_turn": false,
+  "anti_draw_enabled": true,
+  "anti_draw_threshold": 0.12,
+  "anti_draw_min_advantage": 0.35,
+  "context_auto": true,
+  "manual_player_rating": 0,
+  "manual_opponent_rating": 0,
+  "accuracy_candidate_limit": 8,
+  "recommendation_accuracy_min": 70,
+  "recommendation_accuracy_max": 90,
+  "recommendation_accuracy_priority": 80,
+  "recommendation_strength_first": false,
+  "recommendation_policy_version": 2
+}

@@ -1,0 +1,23 @@
+CHESS SUITE 1.8.9 — SOURCE / AI MAINTENANCE BUNDLE
+
+INSTALL
+Close the app and back up your python folder. Copy ALL files from this bundle's
+python folder, including the new version.py. Keep settings.json, engines, weights
+and credentials. Launch main.py normally with your existing Python environment.
+No new runtime dependency. Compatible extension1.8.3 is included unchanged;
+no browser extension update is required.
+
+FUTURE FIXES
+Keep/share the whole source bundle, not just the installed Python files.
+Start with AGENTS.md and README.md at the bundle root. docs/ contains feature
+owners, current behavior, validation commands and a concise handoff template.
+Use tools/navigate.py to find relevant functions and tools/check.py to run checks.
+Use tools/package.py for the next verified source ZIP.
+
+Range targeting is now the default. Old strength-first defaults migrate once;
+you can explicitly enable strength first again. Editing the range or priority
+returns to range targeting without another search. Your safety cap is retained.
+For 50–85% with priority75%, see docs/ACCURACY_FIX.md: a .50-pawn cap and the
+available analyzed alternatives can prevent reaching75%. Opening moves1–10,
+validated books and forced mates retain their protections. No website review
+percentage is guaranteed. Windows/live-site verification remains separate.
